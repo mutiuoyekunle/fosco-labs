@@ -174,7 +174,7 @@ export function RequestTutorialModal({ isOpen, onClose }: RequestTutorialModalPr
 
         <header className={styles.header}>
           <h2 id="request-tutorial-title" className={styles.title}>
-            Request a Tutorial Session
+            Request a Training Session
           </h2>
           <p className={styles.description}>
             Tell us what you want to learn. We'll reach out to discuss a

@@ -23,20 +23,21 @@ export function GetStartedSection() {
             Get started today!
           </h2>
           <p className={styles.subtitle}>
-            Short supporting description for the section
+            No degree, no tech background, just direction? Master the tools and
+            frameworks used to build high-performance digital products.
           </p>
           <div className={styles.actions}>
             <motion.a
-              href="#categories"
+              href="/#categories"
               className={buttonStyles.primary}
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.98 }}
               transition={quickTransition}
             >
-              Explore Tutorial Categories
+              Explore Training Categories
             </motion.a>
             <motion.a
-              href="#consultancy"
+              href="/#consultancy"
               className={buttonStyles.secondary}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}

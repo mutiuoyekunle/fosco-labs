@@ -9,11 +9,11 @@ const LOGO_URL =
   'https://www.figma.com/api/mcp/asset/67071104-7de0-4d70-b98f-9f4edb212fad';
 
 const NAV_LINKS = [
-  { label: 'Programmes', href: '#programmes' },
-  { label: 'Categories', href: '#categories' },
-  { label: 'Consultancy', href: '#consultancy' },
-  { label: 'About', href: '#about' },
-  { label: 'Contact', href: '#contact' },
+  { label: 'Programmes', href: '/programmes' },
+  { label: 'Categories', href: '/#categories' },
+  { label: 'Consultancy', href: '/#consultancy' },
+  { label: 'About', href: '/about' },
+  { label: 'Contact', href: '/contact' },
 ] as const;
 
 function HamburgerIcon({ className }: { className?: string }) {
@@ -121,7 +121,7 @@ export function Nav() {
           </nav>
           <div className={styles.cta}>
             <motion.a
-              href="#categories"
+              href="/programmes"
               className={buttonStyles.primaryCompact}
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.98 }}
@@ -163,7 +163,7 @@ export function Nav() {
             ))}
           </nav>
           <div className={styles.mobileMenuCtaWrap}>
-            <a href="#categories" className={buttonStyles.primaryCompact} onClick={closeMenu}>
+            <a href="/programmes" className={buttonStyles.primaryCompact} onClick={closeMenu}>
               View Programmes
             </a>
           </div>

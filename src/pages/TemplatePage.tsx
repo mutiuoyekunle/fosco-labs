@@ -33,17 +33,17 @@ export function TemplatePage() {
       <section className={styles.ctaSectionWrapper}>
         <div className={styles.ctaSection}>
           <div className={styles.ctaContent}>
-            <h2 className={styles.ctaTitle}>CTA Header</h2>
+            <h2 className={styles.ctaTitle}>Get started today!</h2>
             <p className={styles.ctaDescription}>
               Short supporting description for the section
             </p>
           </div>
           <div className={styles.ctaActions}>
-            <a href="#primary" className={styles.ctaPrimary}>
-              CTA 1
+            <a href="/#categories" className={styles.ctaPrimary}>
+              Explore Tutorial Categories
             </a>
-            <a href="#secondary" className={styles.ctaSecondary}>
-              CTA 2
+            <a href="/#consultancy" className={styles.ctaSecondary}>
+              Request Consultancy
             </a>
           </div>
         </div>

@@ -1,0 +1,475 @@
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  width: 100%;
+}
+
+/* Hero: Page title + short description */
+.heroWrapper {
+  width: 100%;
+  padding: 88px 32px 0;
+}
+
+.heroSection {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  min-height: 300px;
+  background: var(--color-footer-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 24px;
+  padding: 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.heroContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 16px;
+}
+
+.pageTitle {
+  margin: 0;
+  font-size: 52px;
+  line-height: 1.1;
+  font-weight: 700;
+  color: var(--color-navy);
+}
+
+.pageDescription {
+  margin: 0;
+  max-width: 920px;
+  font-size: 20px;
+  line-height: 30px;
+  color: var(--color-gray);
+}
+
+/* Body content area */
+.bodySectionWrapper {
+  width: 100%;
+  padding: 32px 32px 0;
+}
+
+.bodySection {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  background: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: 24px;
+  padding: 56px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.bannerWrap {
+  width: 100%;
+  border: 1px solid var(--color-border);
+  border-radius: 18px;
+  overflow: hidden;
+  background: var(--color-footer-bg);
+  position: relative;
+  height: clamp(220px, 34vw, 420px);
+}
+
+.bannerWrap::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(0, 45, 91, 0.22) 0%,
+    rgba(0, 45, 91, 0.08) 45%,
+    rgba(24, 3, 38, 0.26) 100%
+  );
+  z-index: 1;
+  pointer-events: none;
+}
+
+.bannerImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 40%;
+  display: block;
+}
+
+.featureRows {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.featureRow {
+  display: grid;
+  grid-template-columns: 1.06fr 0.94fr;
+  gap: 18px;
+  align-items: stretch;
+}
+
+.reverse {
+  grid-template-columns: 0.94fr 1.06fr;
+}
+
+.reverse .featureCopy {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.reverse .featureVisual {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.featureCopy {
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  background: #fff;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.featureCopy h2 {
+  margin: 0;
+  font-size: 26px;
+  line-height: 1.3;
+  color: var(--color-navy);
+}
+
+.featureCopy p {
+  margin: 0;
+  font-size: 16px;
+  line-height: 26px;
+  color: var(--color-gray);
+}
+
+.featureCopy ul {
+  margin: 0;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.featureCopy li {
+  font-size: 16px;
+  line-height: 26px;
+  color: var(--color-gray);
+}
+
+.featureVisual {
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  background: #f9fbfd;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.graphicSvg {
+  width: 100%;
+  max-width: 380px;
+  height: auto;
+  display: block;
+}
+
+.pulseNode {
+  transform-origin: center;
+  animation: nodePulse 3.6s ease-in-out infinite;
+}
+
+.pulseDot {
+  transform-origin: center;
+  animation: dotPulse 2.8s ease-in-out infinite;
+}
+
+.slideBar {
+  animation: barShift 4.2s ease-in-out infinite;
+}
+
+.slideBarSoft {
+  animation: barShift 5.2s ease-in-out infinite;
+}
+
+.fadeStroke {
+  animation: strokeFade 3.4s ease-in-out infinite;
+}
+
+.pathPulse {
+  animation: pathGlow 3.8s ease-in-out infinite;
+}
+
+.secondaryGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.block {
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  background: var(--color-footer-bg);
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.block h2 {
+  margin: 0;
+  font-size: 24px;
+  line-height: 1.3;
+  color: var(--color-navy);
+}
+
+.block p {
+  margin: 0;
+  font-size: 16px;
+  line-height: 26px;
+  color: var(--color-gray);
+}
+
+.block ul {
+  margin: 0;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.block li {
+  font-size: 16px;
+  line-height: 26px;
+  color: var(--color-gray);
+}
+
+.block a {
+  color: var(--color-navy);
+  text-decoration: underline;
+}
+
+.secondaryGrid .block:first-child {
+  background: linear-gradient(
+    -29.42deg,
+    rgb(33, 0, 9) 38.84%,
+    rgb(95, 6, 125) 119.19%
+  );
+  border: none;
+}
+
+.secondaryGrid .block:first-child h2,
+.secondaryGrid .block:first-child li,
+.secondaryGrid .block:first-child p {
+  color: #e1e8ed;
+}
+
+.secondaryGrid .block:first-child h2 {
+  color: #fff;
+}
+
+/* CTA section */
+.ctaSectionWrapper {
+  width: 100%;
+  padding: 32px;
+}
+
+.ctaSection {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  background: var(--color-footer-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 24px;
+  padding: 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+
+.ctaContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+}
+
+.ctaTitle {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 40px;
+  color: var(--color-navy);
+}
+
+.ctaDescription {
+  margin: 0;
+  font-size: 18px;
+  line-height: 28px;
+  color: var(--color-gray);
+  max-width: 900px;
+}
+
+.ctaActions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+
+@media (max-width: 1024px) {
+  .featureRow,
+  .reverse {
+    grid-template-columns: 1fr;
+  }
+
+  .featureVisual {
+    order: 2;
+  }
+
+  .featureCopy {
+    order: 1;
+  }
+
+  .secondaryGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .heroWrapper {
+    padding: 48px 16px 0;
+  }
+
+  .heroSection {
+    padding: 48px 24px;
+    min-height: auto;
+  }
+
+  .pageTitle {
+    font-size: 34px;
+  }
+
+  .pageDescription {
+    font-size: 16px;
+    line-height: 26px;
+  }
+
+  .bodySectionWrapper,
+  .ctaSectionWrapper {
+    padding: 24px 16px;
+  }
+
+  .bodySection {
+    padding: 28px 20px;
+  }
+
+  .block h2 {
+    font-size: 22px;
+  }
+
+  .featureCopy h2,
+  .block h2 {
+    font-size: 22px;
+  }
+
+  .featureCopy p,
+  .featureCopy li,
+  .block p,
+  .block li {
+    font-size: 15px;
+    line-height: 24px;
+  }
+
+  .ctaSection {
+    padding: 48px 24px;
+  }
+
+  .ctaTitle {
+    font-size: 22px;
+    line-height: 32px;
+  }
+
+  .ctaDescription {
+    font-size: 16px;
+    line-height: 26px;
+  }
+}
+
+@keyframes nodePulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+  50% {
+    transform: scale(1.04);
+    opacity: 1;
+  }
+}
+
+@keyframes dotPulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.75;
+  }
+  50% {
+    transform: scale(1.18);
+    opacity: 1;
+  }
+}
+
+@keyframes barShift {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(4px);
+  }
+}
+
+@keyframes strokeFade {
+  0%,
+  100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+@keyframes pathGlow {
+  0%,
+  100% {
+    opacity: 0.72;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pulseNode,
+  .pulseDot,
+  .slideBar,
+  .slideBarSoft,
+  .fadeStroke,
+  .pathPulse {
+    animation: none !important;
+  }
+}

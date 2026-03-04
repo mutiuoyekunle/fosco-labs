@@ -5,8 +5,26 @@ import buttonStyles from './Button/Button.module.css';
 import { useReducedMotion } from '../hooks/useReducedMotion';
 import { sectionVariants } from '../utils/animations';
 
-const CHECK_ICON =
-  'https://www.figma.com/api/mcp/asset/b8c513f9-e6fd-40c3-b15e-99ab25ab4cc3';
+function CheckIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden
+    >
+      <circle cx="12" cy="12" r="10" stroke="#22C55E" strokeWidth="2.5" />
+      <path
+        d="M8 12.3L10.8 15L16.4 9.4"
+        stroke="#22C55E"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
 
 const OFFERINGS = [
   'AI Integration',
@@ -78,13 +96,7 @@ export function ConsultancySection() {
             <ul className={styles.list}>
               {OFFERINGS.map((item) => (
                 <li key={item} className={styles.listItem}>
-                  <img
-                    src={CHECK_ICON}
-                    alt=""
-                    width={24}
-                    height={24}
-                    className={styles.checkIcon}
-                  />
+                  <CheckIcon className={styles.checkIcon} />
                   <span>{item}</span>
                 </li>
               ))}

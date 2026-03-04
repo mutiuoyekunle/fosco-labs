@@ -45,16 +45,16 @@ export function HeroSection() {
             custom={reduceMotion}
           >
             <motion.a
-              href="#categories"
+              href="/#categories"
               className={buttonStyles.primary}
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.98 }}
               transition={quickTransition}
             >
-              Explore Tutorial Categories
+              Explore Training Categories
             </motion.a>
             <motion.a
-              href="#consultancy"
+              href="/#consultancy"
               className={buttonStyles.secondary}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}

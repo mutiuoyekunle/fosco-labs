@@ -5,23 +5,23 @@ import { useReducedMotion } from '../hooks/useReducedMotion';
 import { sectionVariants } from '../utils/animations';
 
 const PROGRAMMES_LINKS = [
-  { label: 'AI Engineering', href: '#categories' },
-  { label: 'JavaScript & Frontend', href: '#categories' },
-  { label: 'UI Engineering', href: '#categories' },
-  { label: 'AI-Assisted Coding', href: '#categories' },
-  { label: 'Firebase & Supabase', href: '#categories' },
+  { label: 'AI Engineering', href: '/programmes#ai-foundations' },
+  { label: 'JavaScript & Frontend', href: '/programmes#frontend-accelerator' },
+  { label: 'UI Engineering', href: '/programmes#frontend-accelerator' },
+  { label: 'AI-Assisted Coding', href: '/programmes#ai-assisted-delivery' },
+  { label: 'Firebase & Supabase', href: '/programmes#ai-foundations' },
 ] as const;
 
 const COMPANY_LINKS = [
-  { label: 'About', href: '#about' },
-  { label: 'Consultancy', href: '#consultancy' },
+  { label: 'About', href: '/about' },
+  { label: 'Consultancy', href: '/#consultancy' },
   { label: 'Templates', href: '/template' },
-  { label: 'Contact', href: '#contact' },
+  { label: 'Contact', href: '/contact' },
 ] as const;
 
 const LEGAL_LINKS = [
-  { label: 'Privacy Policy', href: '#privacy' },
-  { label: 'Terms of Service', href: '#terms' },
+  { label: 'Privacy Policy', href: '/privacy-policy' },
+  { label: 'Terms of Service', href: '/terms-of-service' },
 ] as const;
 
 export function Footer() {
@@ -92,7 +92,7 @@ export function Footer() {
         </div>
         <div className={styles.bottom}>
           <p className={styles.copyright}>
-            © 2026 Fosco Labs Consulting. All rights reserved.
+            © 2026 Fosco Labs. Powered by NAD Access. All rights reserved.
           </p>
         </div>
       </div>

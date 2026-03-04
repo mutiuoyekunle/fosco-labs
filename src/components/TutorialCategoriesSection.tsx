@@ -77,7 +77,7 @@ export function TutorialCategoriesSection() {
       <div className={styles.section}>
         <header className={styles.header}>
           <h2 id="categories-heading" className={styles.title}>
-            Tutorial Categories
+            Training Categories
           </h2>
           <p className={styles.subtitle}>
             Choose your learning path. Each category includes hands-on projects
@@ -120,7 +120,7 @@ export function TutorialCategoriesSection() {
             whileTap={{ scale: 0.98 }}
             transition={quickTransition}
           >
-            Request Tutorial
+            Request Training
           </motion.button>
         </div>
       </div>
