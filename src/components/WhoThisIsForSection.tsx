@@ -3,6 +3,10 @@ import styles from './WhoThisIsForSection.module.css';
 import { Card } from './Card';
 import { useReducedMotion } from '../hooks/useReducedMotion';
 import { sectionVariants, staggerContainerVariants } from '../utils/animations';
+import juniorDevelopersImage from '../assets/who-this-is-for/junior-developers.jpg';
+import midLevelEngineersImage from '../assets/who-this-is-for/mid-level-engineers.jpg';
+import seniorDevelopersImage from '../assets/who-this-is-for/senior-developers.jpg';
+import productTeamsImage from '../assets/who-this-is-for/product-teams.jpg';
 
 const AUDIENCES = [
   {
@@ -10,31 +14,27 @@ const AUDIENCES = [
     title: 'Junior Developers',
     description:
       'Build solid foundations in modern development practices.',
-    image:
-      'https://www.figma.com/api/mcp/asset/dc27cf3b-b29e-45c3-83eb-997bcba98f7b',
+    image: juniorDevelopersImage,
   },
   {
     id: 'mid',
     title: 'Mid-level Engineers',
     description:
       'Level up with advanced patterns and architectural thinking.',
-    image:
-      'https://www.figma.com/api/mcp/asset/e03c493e-6f2d-461e-a590-4316de7b7912',
+    image: midLevelEngineersImage,
   },
   {
     id: 'senior',
     title: 'Senior Developers',
     description: 'Stay current with AI and cutting-edge technologies.',
-    image:
-      'https://www.figma.com/api/mcp/asset/7601c399-796e-4efa-a810-a0711ba50705',
+    image: seniorDevelopersImage,
   },
   {
     id: 'teams',
     title: 'Product Teams',
     description:
       'Upskill your entire team with consistent, professional training.',
-    image:
-      'https://www.figma.com/api/mcp/asset/39e3e423-cf9f-4780-a06c-a8013a1fe9e6',
+    image: productTeamsImage,
   },
 ] as const;
 

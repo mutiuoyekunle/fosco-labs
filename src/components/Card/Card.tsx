@@ -3,9 +3,7 @@ import styles from './Card.module.css';
 import buttonStyles from '../Button/Button.module.css';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
 import { staggerItemVariants, quickTransition } from '../../utils/animations';
-
-const ARROW_ICON =
-  'https://www.figma.com/api/mcp/asset/7987af0d-f888-41f5-bc6c-8782c4d031fe';
+import arrowRightIconUrl from '../../assets/arrow-right-02.svg';
 
 export type CardProps = {
   title: string;
@@ -63,7 +61,7 @@ export function Card({
           >
             <span className={styles.learnMoreLabel}>Learn More</span>
             <img
-              src={ARROW_ICON}
+              src={arrowRightIconUrl}
               alt=""
               width={24}
               height={24}

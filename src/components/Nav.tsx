@@ -4,9 +4,7 @@ import { useLenis } from 'lenis/react';
 import styles from './Nav.module.css';
 import buttonStyles from './Button/Button.module.css';
 import { navVariants, quickTransition } from '../utils/animations';
-
-const LOGO_URL =
-  'https://www.figma.com/api/mcp/asset/67071104-7de0-4d70-b98f-9f4edb212fad';
+import logoNavUrl from '../assets/logo-nav.svg';
 
 const NAV_LINKS = [
   { label: 'Programmes', href: '/programmes' },
@@ -98,11 +96,11 @@ export function Nav() {
             transition={quickTransition}
           >
             <img
-              src={LOGO_URL}
+              src={logoNavUrl}
               alt="Fosco Labs Consulting"
               className={styles.logoImg}
-              width={98}
-              height={31}
+              width={91}
+              height={23}
             />
           </motion.a>
           <nav className={styles.links} aria-label="Main navigation">

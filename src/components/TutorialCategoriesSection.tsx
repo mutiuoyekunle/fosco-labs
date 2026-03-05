@@ -10,6 +10,11 @@ import {
   staggerContainerVariants,
   quickTransition,
 } from '../utils/animations';
+import aiEngineeringImage from '../assets/tutorial-categories/ai-engineering.jpg';
+import modernJsImage from '../assets/tutorial-categories/modern-js.jpg';
+import firebaseSupabaseImage from '../assets/tutorial-categories/firebase-supabase.jpg';
+import aiAssistedCodingImage from '../assets/tutorial-categories/ai-assisted-coding.jpg';
+import uiEngineeringImage from '../assets/tutorial-categories/ui-engineering.jpg';
 
 const CATEGORIES = [
   {
@@ -17,8 +22,7 @@ const CATEGORIES = [
     title: 'AI Engineering for Developers',
     description:
       'Build production-ready AI applications. Learn LLMs, prompt engineering, and AI integration patterns.',
-    image:
-      'https://www.figma.com/api/mcp/asset/ff925791-4ddc-41d7-bad1-cb48d04c2703',
+    image: aiEngineeringImage,
     href: '#ai-engineering',
   },
   {
@@ -26,8 +30,7 @@ const CATEGORIES = [
     title: 'Modern JavaScript & Frontend Engineering',
     description:
       'Master React, TypeScript, and modern frontend architecture for scalable applications.',
-    image:
-      'https://www.figma.com/api/mcp/asset/612a2031-82ae-474f-b522-e75ae9da95fb',
+    image: modernJsImage,
     href: '#modern-js',
   },
   {
@@ -35,8 +38,7 @@ const CATEGORIES = [
     title: 'Firebase & Supabase for Modern Applications',
     description:
       'Build full-stack apps with Firebase and Supabase. Authentication, databases, and real-time features.',
-    image:
-      'https://www.figma.com/api/mcp/asset/2f968847-ce47-455c-be7f-85782f20efad',
+    image: firebaseSupabaseImage,
     href: '#firebase-supabase',
   },
   {
@@ -44,8 +46,7 @@ const CATEGORIES = [
     title: 'AI-Assisted Coding & Developer Productivity',
     description:
       'Leverage AI tools like Copilot and ChatGPT to accelerate your development workflow.',
-    image:
-      'https://www.figma.com/api/mcp/asset/4617a5dd-b84e-4022-9d37-f473f240d8bb',
+    image: aiAssistedCodingImage,
     href: '#ai-assisted-coding',
   },
   {
@@ -53,8 +54,7 @@ const CATEGORIES = [
     title: 'UI Engineering & Design Systems',
     description:
       'Create consistent, accessible interfaces with design systems and component libraries.',
-    image:
-      'https://www.figma.com/api/mcp/asset/660c6a54-35d4-4d0a-9b69-5d4cc47b4de9',
+    image: uiEngineeringImage,
     href: '#ui-engineering',
   },
 ] as const;

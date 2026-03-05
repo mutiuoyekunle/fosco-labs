@@ -1,9 +1,6 @@
 import { motion } from 'framer-motion';
 import styles from './WhatsAppFab.module.css';
-
-/* WhatsApp icon from Figma: Chat on WhatsApp (node 90-2047) */
-const WHATSAPP_ICON_URL =
-  'https://www.figma.com/api/mcp/asset/f3b2f7e5-eb6d-41c8-8129-de73b6b72a25';
+import whatsappIconUrl from '../assets/whatsapp-icon.svg';
 
 const WHATSAPP_LINK = 'https://wa.me/';
 
@@ -22,7 +19,7 @@ export function WhatsAppFab() {
       whileTap={{ scale: 0.95 }}
     >
       <img
-        src={WHATSAPP_ICON_URL}
+        src={whatsappIconUrl}
         alt=""
         width={32}
         height={32}
