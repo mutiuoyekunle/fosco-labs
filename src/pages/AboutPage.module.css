@@ -336,6 +336,12 @@
     grid-template-columns: 1fr;
   }
 
+  .reverse .featureCopy,
+  .reverse .featureVisual {
+    grid-column: auto;
+    grid-row: auto;
+  }
+
   .featureVisual {
     order: 2;
   }
