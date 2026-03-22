@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import styles from './RequestTutorialModal.module.css';
 import buttonStyles from './Button/Button.module.css';
+import { isEmailValid, isPhoneValid, openMailto } from '../utils/formEmail';
 
 type RequestTutorialModalProps = {
   isOpen: boolean;
@@ -11,6 +12,16 @@ export function RequestTutorialModal({ isOpen, onClose }: RequestTutorialModalPr
   const scrollRef = useRef<HTMLDivElement>(null);
   const [scrollState, setScrollState] = useState({ scrollTop: 0, scrollHeight: 0, clientHeight: 0 });
   const thumbDragRef = useRef({ isDragging: false, startY: 0, startScrollTop: 0 });
+  const [formData, setFormData] = useState({
+    fullName: '',
+    email: '',
+    countryCode: '+44',
+    phone: '',
+    learningInterest: '',
+    currentLevel: '',
+    goals: '',
+  });
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   const updateScrollState = useCallback(() => {
     const el = scrollRef.current;
@@ -107,6 +118,62 @@ export function RequestTutorialModal({ isOpen, onClose }: RequestTutorialModalPr
     if (e.target === e.currentTarget) onClose();
   };
 
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const nextErrors: Record<string, string> = {};
+
+    if (!formData.fullName.trim()) nextErrors.fullName = 'Full name is required.';
+    if (!formData.email.trim()) {
+      nextErrors.email = 'Email address is required.';
+    } else if (!isEmailValid(formData.email)) {
+      nextErrors.email = 'Enter a valid email address.';
+    }
+    if (!formData.phone.trim()) {
+      nextErrors.phone = 'WhatsApp or mobile number is required.';
+    } else if (!isPhoneValid(formData.phone)) {
+      nextErrors.phone = 'Enter a valid mobile number.';
+    }
+    if (!formData.learningInterest) {
+      nextErrors.learningInterest = 'Select a learning interest.';
+    }
+    if (!formData.currentLevel) {
+      nextErrors.currentLevel = 'Select your current skill level.';
+    }
+    if (!formData.goals.trim()) {
+      nextErrors.goals = 'Tell us what you want to achieve.';
+    }
+
+    setErrors(nextErrors);
+
+    if (Object.keys(nextErrors).length > 0) return;
+
+    openMailto({
+      subject: `Training enquiry: ${formData.learningInterest}`,
+      lines: [
+        'Training enquiry',
+        '',
+        `Full name: ${formData.fullName.trim()}`,
+        `Email: ${formData.email.trim()}`,
+        `Phone: ${formData.countryCode} ${formData.phone.trim()}`,
+        `Learning interest: ${formData.learningInterest}`,
+        `Current level: ${formData.currentLevel}`,
+        '',
+        'Goals:',
+        formData.goals.trim(),
+      ],
+    });
+
+    onClose();
+  };
+
   return (
     <div
       className={styles.overlay}
@@ -184,7 +251,7 @@ export function RequestTutorialModal({ isOpen, onClose }: RequestTutorialModalPr
 
         <form
           className={styles.form}
-          onSubmit={(e) => e.preventDefault()}
+          onSubmit={handleSubmit}
         >
           <div className={styles.field}>
             <label htmlFor="request-full-name" className={styles.label}>
@@ -193,10 +260,15 @@ export function RequestTutorialModal({ isOpen, onClose }: RequestTutorialModalPr
             <input
               id="request-full-name"
               type="text"
-              className={styles.input}
+              name="fullName"
+              value={formData.fullName}
+              onChange={handleChange}
+              className={`${styles.input} ${errors.fullName ? styles.inputError : ''}`}
               placeholder="Enter your name"
               autoComplete="name"
+              aria-invalid={Boolean(errors.fullName)}
             />
+            {errors.fullName && <span className={styles.errorText}>{errors.fullName}</span>}
           </div>
 
           <div className={styles.field}>
@@ -206,10 +278,15 @@ export function RequestTutorialModal({ isOpen, onClose }: RequestTutorialModalPr
             <input
               id="request-email"
               type="email"
-              className={styles.input}
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              className={`${styles.input} ${errors.email ? styles.inputError : ''}`}
               placeholder="name@email.com"
               autoComplete="email"
+              aria-invalid={Boolean(errors.email)}
             />
+            {errors.email && <span className={styles.errorText}>{errors.email}</span>}
           </div>
 
           <div className={styles.field}>
@@ -219,8 +296,10 @@ export function RequestTutorialModal({ isOpen, onClose }: RequestTutorialModalPr
             <div className={styles.phoneRow}>
               <select
                 id="request-country"
+                name="countryCode"
                 className={`${styles.input} ${styles.select} ${styles.countryCodeSelect}`}
-                defaultValue="+44"
+                value={formData.countryCode}
+                onChange={handleChange}
                 aria-label="Country code"
               >
                 <option value="+44">+44</option>
@@ -247,11 +326,16 @@ export function RequestTutorialModal({ isOpen, onClose }: RequestTutorialModalPr
               <input
                 id="request-phone"
                 type="tel"
-                className={`${styles.input} ${styles.phoneInput}`}
+                name="phone"
+                value={formData.phone}
+                onChange={handleChange}
+                className={`${styles.input} ${styles.phoneInput} ${errors.phone ? styles.inputError : ''}`}
                 placeholder="Mobile"
                 autoComplete="tel-national"
+                aria-invalid={Boolean(errors.phone)}
               />
             </div>
+            {errors.phone && <span className={styles.errorText}>{errors.phone}</span>}
           </div>
 
           <div className={styles.field}>
@@ -261,10 +345,13 @@ export function RequestTutorialModal({ isOpen, onClose }: RequestTutorialModalPr
             </label>
             <select
               id="request-interest"
-              className={`${styles.input} ${styles.select}`}
-              defaultValue=""
+              name="learningInterest"
+              value={formData.learningInterest}
+              onChange={handleChange}
+              className={`${styles.input} ${styles.select} ${errors.learningInterest ? styles.inputError : ''}`}
+              aria-invalid={Boolean(errors.learningInterest)}
             >
-              <option value="" disabled>
+              <option value="">
                 Select a category
               </option>
               <option value="ai-engineering">AI Engineering</option>
@@ -273,6 +360,9 @@ export function RequestTutorialModal({ isOpen, onClose }: RequestTutorialModalPr
               <option value="ai-assisted-coding">AI-Assisted Coding</option>
               <option value="firebase-supabase">Firebase & Supabase</option>
             </select>
+            {errors.learningInterest && (
+              <span className={styles.errorText}>{errors.learningInterest}</span>
+            )}
           </div>
 
           <div className={styles.field}>
@@ -281,16 +371,22 @@ export function RequestTutorialModal({ isOpen, onClose }: RequestTutorialModalPr
             </label>
             <select
               id="request-level"
-              className={`${styles.input} ${styles.select}`}
-              defaultValue=""
+              name="currentLevel"
+              value={formData.currentLevel}
+              onChange={handleChange}
+              className={`${styles.input} ${styles.select} ${errors.currentLevel ? styles.inputError : ''}`}
+              aria-invalid={Boolean(errors.currentLevel)}
             >
-              <option value="" disabled>
+              <option value="">
                 Select your level
               </option>
               <option value="beginner">Beginner</option>
               <option value="intermediate">Intermediate</option>
               <option value="advanced">Advanced</option>
             </select>
+            {errors.currentLevel && (
+              <span className={styles.errorText}>{errors.currentLevel}</span>
+            )}
           </div>
 
           <div className={styles.field}>
@@ -299,10 +395,15 @@ export function RequestTutorialModal({ isOpen, onClose }: RequestTutorialModalPr
             </label>
             <textarea
               id="request-goals"
-              className={`${styles.input} ${styles.textarea}`}
+              name="goals"
+              value={formData.goals}
+              onChange={handleChange}
+              className={`${styles.input} ${styles.textarea} ${errors.goals ? styles.inputError : ''}`}
               placeholder="e.g., I want to build a custom AI chatbot for my SaaS..."
               rows={3}
+              aria-invalid={Boolean(errors.goals)}
             />
+            {errors.goals && <span className={styles.errorText}>{errors.goals}</span>}
           </div>
 
           <div className={styles.actions}>

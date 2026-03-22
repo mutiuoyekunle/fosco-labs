@@ -163,6 +163,17 @@
   outline-offset: 0;
 }
 
+.inputError {
+  outline: 2px solid #f87171;
+  outline-offset: 0;
+}
+
+.errorText {
+  font-size: 12px;
+  line-height: 18px;
+  color: #fecaca;
+}
+
 .mobileRow {
   display: flex;
   gap: 8px;
@@ -205,6 +216,13 @@
 
 .form button[type='submit'] {
   align-self: flex-start;
+}
+
+.submitHint {
+  margin: 0;
+  font-size: 13px;
+  line-height: 20px;
+  color: var(--color-consultancy-light);
 }
 
 @media (max-width: 900px) {

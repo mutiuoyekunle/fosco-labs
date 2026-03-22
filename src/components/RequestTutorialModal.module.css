@@ -315,6 +315,17 @@
   box-shadow: 0 0 0 2px var(--color-purple-cta);
 }
 
+.inputError {
+  border-color: #ef4444;
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.16);
+}
+
+.errorText {
+  font-size: 12px;
+  line-height: 18px;
+  color: #b91c1c;
+}
+
 .textarea {
   min-height: 64px;
   padding: 8px 12px;

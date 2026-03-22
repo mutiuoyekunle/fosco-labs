@@ -4,6 +4,7 @@ import styles from './ConsultancySection.module.css';
 import buttonStyles from './Button/Button.module.css';
 import { useReducedMotion } from '../hooks/useReducedMotion';
 import { sectionVariants } from '../utils/animations';
+import { isEmailValid, isPhoneValid, openMailto } from '../utils/formEmail';
 
 function CheckIcon({ className }: { className?: string }) {
   return (
@@ -53,6 +54,7 @@ export function ConsultancySection() {
     countryCode: '+44',
     serviceType: '',
   });
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -63,7 +65,38 @@ export function ConsultancySection() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: wire to backend or email
+    const nextErrors: Record<string, string> = {};
+
+    if (!formData.firstName.trim()) nextErrors.firstName = 'First name is required.';
+    if (!formData.lastName.trim()) nextErrors.lastName = 'Last name is required.';
+    if (!formData.email.trim()) {
+      nextErrors.email = 'Email address is required.';
+    } else if (!isEmailValid(formData.email)) {
+      nextErrors.email = 'Enter a valid email address.';
+    }
+    if (!formData.mobile.trim()) {
+      nextErrors.mobile = 'Mobile number is required.';
+    } else if (!isPhoneValid(formData.mobile)) {
+      nextErrors.mobile = 'Enter a valid mobile number.';
+    }
+    if (!formData.serviceType) nextErrors.serviceType = 'Select a service type.';
+
+    setErrors(nextErrors);
+
+    if (Object.keys(nextErrors).length > 0) return;
+
+    openMailto({
+      subject: `Consultancy enquiry: ${formData.serviceType}`,
+      lines: [
+        'Consultancy enquiry',
+        '',
+        `First name: ${formData.firstName.trim()}`,
+        `Last name: ${formData.lastName.trim()}`,
+        `Email: ${formData.email.trim()}`,
+        `Phone: ${formData.countryCode} ${formData.mobile.trim()}`,
+        `Service type: ${formData.serviceType}`,
+      ],
+    });
   };
 
   const reduceMotion = useReducedMotion();
@@ -118,9 +151,15 @@ export function ConsultancySection() {
                 placeholder="Enter your first name"
                 value={formData.firstName}
                 onChange={handleChange}
-                className={styles.input}
+                className={`${styles.input} ${
+                  errors.firstName ? styles.inputError : ''
+                }`}
                 autoComplete="given-name"
+                aria-invalid={Boolean(errors.firstName)}
               />
+              {errors.firstName && (
+                <span className={styles.errorText}>{errors.firstName}</span>
+              )}
             </label>
             <label className={styles.field}>
               <span className={styles.label}>Last Name</span>
@@ -130,9 +169,15 @@ export function ConsultancySection() {
                 placeholder="Enter your last name"
                 value={formData.lastName}
                 onChange={handleChange}
-                className={styles.input}
+                className={`${styles.input} ${
+                  errors.lastName ? styles.inputError : ''
+                }`}
                 autoComplete="family-name"
+                aria-invalid={Boolean(errors.lastName)}
               />
+              {errors.lastName && (
+                <span className={styles.errorText}>{errors.lastName}</span>
+              )}
             </label>
           </div>
 
@@ -145,9 +190,15 @@ export function ConsultancySection() {
                 placeholder="name@email.com"
                 value={formData.email}
                 onChange={handleChange}
-                className={styles.input}
+                className={`${styles.input} ${
+                  errors.email ? styles.inputError : ''
+                }`}
                 autoComplete="email"
+                aria-invalid={Boolean(errors.email)}
               />
+              {errors.email && (
+                <span className={styles.errorText}>{errors.email}</span>
+              )}
             </label>
             <label className={styles.field}>
               <span className={styles.label}>Mobile Number</span>
@@ -179,10 +230,16 @@ export function ConsultancySection() {
                   placeholder="Mobile"
                   value={formData.mobile}
                   onChange={handleChange}
-                  className={styles.input}
+                  className={`${styles.input} ${
+                    errors.mobile ? styles.inputError : ''
+                  }`}
                   autoComplete="tel-national"
+                  aria-invalid={Boolean(errors.mobile)}
                 />
               </div>
+              {errors.mobile && (
+                <span className={styles.errorText}>{errors.mobile}</span>
+              )}
             </label>
           </div>
 
@@ -192,8 +249,11 @@ export function ConsultancySection() {
               name="serviceType"
               value={formData.serviceType}
               onChange={handleChange}
-              className={styles.select}
+              className={`${styles.select} ${
+                errors.serviceType ? styles.inputError : ''
+              }`}
               aria-label="Service Type"
+              aria-invalid={Boolean(errors.serviceType)}
             >
               <option value="">Select an offering</option>
               {SERVICE_OPTIONS.map((opt) => (
@@ -202,6 +262,9 @@ export function ConsultancySection() {
                 </option>
               ))}
             </select>
+            {errors.serviceType && (
+              <span className={styles.errorText}>{errors.serviceType}</span>
+            )}
           </label>
 
           <motion.button
@@ -213,6 +276,7 @@ export function ConsultancySection() {
           >
             Request Consultancy
           </motion.button>
+          <p className={styles.submitHint}>This opens your email app with the enquiry details.</p>
         </form>
       </div>
     </motion.section>

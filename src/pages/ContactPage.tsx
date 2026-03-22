@@ -1,6 +1,12 @@
 import { useState } from 'react';
 import styles from './ContactPage.module.css';
 import buttonStyles from '../components/Button/Button.module.css';
+import {
+  GENERAL_ENQUIRY_EMAIL,
+  isEmailValid,
+  isPhoneValid,
+  openMailto,
+} from '../utils/formEmail';
 
 const INITIAL_FORM = {
   fullName: '',
@@ -19,6 +25,7 @@ const INITIAL_FORM = {
 
 export function ContactPage() {
   const [formData, setFormData] = useState(INITIAL_FORM);
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const isLearningTrack =
     formData.enquiryTrack === 'learning' || formData.enquiryTrack === 'both';
   const isConsultancyTrack =
@@ -33,7 +40,72 @@ export function ContactPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Wire this to backend email/CRM.
+    const nextErrors: Record<string, string> = {};
+
+    if (!formData.enquiryTrack) {
+      nextErrors.enquiryTrack = 'Select what you need support for.';
+    }
+    if (!formData.fullName.trim()) nextErrors.fullName = 'Full name is required.';
+    if (!formData.email.trim()) {
+      nextErrors.email = 'Work email is required.';
+    } else if (!isEmailValid(formData.email)) {
+      nextErrors.email = 'Enter a valid email address.';
+    }
+    if (formData.phone.trim() && !isPhoneValid(formData.phone)) {
+      nextErrors.phone = 'Enter a valid mobile number.';
+    }
+    if (isConsultancyTrack && !formData.projectServiceType) {
+      nextErrors.projectServiceType = 'Select a project service type.';
+    }
+    if (isLearningTrack && !formData.learningInterest) {
+      nextErrors.learningInterest = 'Select a learning interest.';
+    }
+    if (isLearningTrack && !formData.currentLevel) {
+      nextErrors.currentLevel = 'Select your current skill level.';
+    }
+    if (isConsultancyTrack && !formData.timeline) {
+      nextErrors.timeline = 'Select a timeline.';
+    }
+    if (!formData.projectGoal.trim()) {
+      nextErrors.projectGoal = 'Tell us what you want to build or improve.';
+    }
+
+    setErrors(nextErrors);
+
+    if (Object.keys(nextErrors).length > 0) return;
+
+    const enquiryLabel =
+      formData.enquiryTrack === 'both'
+        ? 'Learning and Consultancy'
+        : formData.enquiryTrack === 'learning'
+        ? 'Learning'
+        : 'Consultancy';
+
+    openMailto({
+      to: GENERAL_ENQUIRY_EMAIL,
+      subject: `Website enquiry: ${enquiryLabel}`,
+      lines: [
+        'Website contact enquiry',
+        '',
+        `Support needed: ${enquiryLabel}`,
+        `Full name: ${formData.fullName.trim()}`,
+        `Work email: ${formData.email.trim()}`,
+        `Phone: ${
+          formData.phone.trim()
+            ? `${formData.countryCode} ${formData.phone.trim()}`
+            : 'Not provided'
+        }`,
+        `Company: ${formData.company.trim() || 'Not provided'}`,
+        `Project service type: ${formData.projectServiceType || 'Not provided'}`,
+        `Learning interest: ${formData.learningInterest || 'Not provided'}`,
+        `Current skill level: ${formData.currentLevel || 'Not provided'}`,
+        `Budget range: ${formData.budgetRange || 'Not provided'}`,
+        `Timeline: ${formData.timeline || 'Not provided'}`,
+        '',
+        'Goals:',
+        formData.projectGoal.trim(),
+      ],
+    });
   };
 
   return (
@@ -68,14 +140,20 @@ export function ContactPage() {
                   name="enquiryTrack"
                   value={formData.enquiryTrack}
                   onChange={handleChange}
-                  className={styles.select}
+                  className={`${styles.select} ${
+                    errors.enquiryTrack ? styles.inputError : ''
+                  }`}
                   required
+                  aria-invalid={Boolean(errors.enquiryTrack)}
                 >
                   <option value="">Select one</option>
                   <option value="learning">Learning & Upskilling</option>
                   <option value="consultancy">Project Consultancy</option>
                   <option value="both">Both Learning and Consultancy</option>
                 </select>
+                {errors.enquiryTrack && (
+                  <span className={styles.errorText}>{errors.enquiryTrack}</span>
+                )}
               </label>
 
               <div className={styles.formGrid}>
@@ -87,10 +165,16 @@ export function ContactPage() {
                     value={formData.fullName}
                     onChange={handleChange}
                     placeholder="Enter your name"
-                    className={styles.input}
+                    className={`${styles.input} ${
+                      errors.fullName ? styles.inputError : ''
+                    }`}
                     autoComplete="name"
                     required
+                    aria-invalid={Boolean(errors.fullName)}
                   />
+                  {errors.fullName && (
+                    <span className={styles.errorText}>{errors.fullName}</span>
+                  )}
                 </label>
 
                 <label className={styles.field}>
@@ -101,10 +185,16 @@ export function ContactPage() {
                     value={formData.email}
                     onChange={handleChange}
                     placeholder="name@company.com"
-                    className={styles.input}
+                    className={`${styles.input} ${
+                      errors.email ? styles.inputError : ''
+                    }`}
                     autoComplete="email"
                     required
+                    aria-invalid={Boolean(errors.email)}
                   />
+                  {errors.email && (
+                    <span className={styles.errorText}>{errors.email}</span>
+                  )}
                 </label>
               </div>
 
@@ -131,10 +221,16 @@ export function ContactPage() {
                     value={formData.phone}
                     onChange={handleChange}
                     placeholder="Mobile number"
-                    className={styles.input}
+                    className={`${styles.input} ${
+                      errors.phone ? styles.inputError : ''
+                    }`}
                     autoComplete="tel-national"
+                    aria-invalid={Boolean(errors.phone)}
                   />
                 </div>
+                {errors.phone && (
+                  <span className={styles.errorText}>{errors.phone}</span>
+                )}
               </label>
 
               <div className={styles.formGrid}>
@@ -158,8 +254,11 @@ export function ContactPage() {
                       name="projectServiceType"
                       value={formData.projectServiceType}
                       onChange={handleChange}
-                      className={styles.select}
+                      className={`${styles.select} ${
+                        errors.projectServiceType ? styles.inputError : ''
+                      }`}
                       required={isConsultancyTrack}
+                      aria-invalid={Boolean(errors.projectServiceType)}
                     >
                       <option value="">Select a service</option>
                       <option value="ai-integration">AI Integration</option>
@@ -172,6 +271,11 @@ export function ContactPage() {
                         Code Review & Audit
                       </option>
                     </select>
+                    {errors.projectServiceType && (
+                      <span className={styles.errorText}>
+                        {errors.projectServiceType}
+                      </span>
+                    )}
                   </label>
                 )}
 
@@ -182,8 +286,11 @@ export function ContactPage() {
                       name="learningInterest"
                       value={formData.learningInterest}
                       onChange={handleChange}
-                      className={styles.select}
+                      className={`${styles.select} ${
+                        errors.learningInterest ? styles.inputError : ''
+                      }`}
                       required={isLearningTrack}
+                      aria-invalid={Boolean(errors.learningInterest)}
                     >
                       <option value="">Select an interest</option>
                       <option value="ai-engineering">AI Engineering</option>
@@ -198,6 +305,11 @@ export function ContactPage() {
                         Firebase & Supabase
                       </option>
                     </select>
+                    {errors.learningInterest && (
+                      <span className={styles.errorText}>
+                        {errors.learningInterest}
+                      </span>
+                    )}
                   </label>
                 )}
               </div>
@@ -211,14 +323,20 @@ export function ContactPage() {
                         name="currentLevel"
                         value={formData.currentLevel}
                         onChange={handleChange}
-                        className={styles.select}
+                        className={`${styles.select} ${
+                          errors.currentLevel ? styles.inputError : ''
+                        }`}
                         required={isLearningTrack}
+                        aria-invalid={Boolean(errors.currentLevel)}
                       >
                         <option value="">Select level</option>
                         <option value="beginner">Beginner</option>
                         <option value="intermediate">Intermediate</option>
                         <option value="advanced">Advanced</option>
                       </select>
+                      {errors.currentLevel && (
+                        <span className={styles.errorText}>{errors.currentLevel}</span>
+                      )}
                     </label>
                   )}
 
@@ -249,14 +367,20 @@ export function ContactPage() {
                     name="timeline"
                     value={formData.timeline}
                     onChange={handleChange}
-                    className={styles.select}
+                    className={`${styles.select} ${
+                      errors.timeline ? styles.inputError : ''
+                    }`}
                     required={isConsultancyTrack}
+                    aria-invalid={Boolean(errors.timeline)}
                   >
                     <option value="">Select timeline</option>
                     <option value="asap">ASAP</option>
                     <option value="1-3-months">1-3 months</option>
                     <option value="3-plus-months">3+ months</option>
                   </select>
+                  {errors.timeline && (
+                    <span className={styles.errorText}>{errors.timeline}</span>
+                  )}
                 </label>
               )}
 
@@ -267,9 +391,15 @@ export function ContactPage() {
                   value={formData.projectGoal}
                   onChange={handleChange}
                   placeholder="Tell us what you want to build or improve."
-                  className={styles.textarea}
+                  className={`${styles.textarea} ${
+                    errors.projectGoal ? styles.inputError : ''
+                  }`}
                   required
+                  aria-invalid={Boolean(errors.projectGoal)}
                 />
+                {errors.projectGoal && (
+                  <span className={styles.errorText}>{errors.projectGoal}</span>
+                )}
               </label>
 
               <div className={styles.submitRow}>
@@ -277,8 +407,7 @@ export function ContactPage() {
                   Send Enquiry
                 </button>
                 <p className={styles.helperText}>
-                  By submitting, you agree that we can contact you about your
-                  enquiry.
+                  Opens your email app with the enquiry details addressed to {GENERAL_ENQUIRY_EMAIL}.
                 </p>
               </div>
             </form>
