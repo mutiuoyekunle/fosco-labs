@@ -290,7 +290,7 @@ export function ContactPage() {
               <div className={styles.contactList}>
                 <span>Email: hello@foscolabs.co.uk</span>
                 <span>Legal/Privacy: legal@foscolabs.co.uk</span>
-                <span>Phone: +44 20 7946 0999</span>
+                <span>Phone: 07359939606</span>
                 <span>Hours: Mon-Fri, 9:00-18:00 (UK time)</span>
               </div>
             </section>

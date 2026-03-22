@@ -50,7 +50,7 @@ export function ConsultancySection() {
     lastName: '',
     email: '',
     mobile: '',
-    countryCode: '+234',
+    countryCode: '+44',
     serviceType: '',
   });
 
@@ -159,6 +159,7 @@ export function ConsultancySection() {
                   className={styles.countryCodeSelect}
                   aria-label="Country code"
                 >
+                  <option value="+44">+44</option>
                   <option value="+234">+234</option>
                   <option value="+233">+233</option>
                   <option value="+254">+254</option>
@@ -166,7 +167,6 @@ export function ConsultancySection() {
                   <option value="+255">+255</option>
                   <option value="+256">+256</option>
                   <option value="+1">+1</option>
-                  <option value="+44">+44</option>
                   <option value="+91">+91</option>
                   <option value="+49">+49</option>
                   <option value="+33">+33</option>

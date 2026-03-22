@@ -220,9 +220,10 @@ export function RequestTutorialModal({ isOpen, onClose }: RequestTutorialModalPr
               <select
                 id="request-country"
                 className={`${styles.input} ${styles.select} ${styles.countryCodeSelect}`}
-                defaultValue="+234"
+                defaultValue="+44"
                 aria-label="Country code"
               >
+                <option value="+44">+44</option>
                 <option value="+234">+234</option>
                 <option value="+233">+233</option>
                 <option value="+254">+254</option>
@@ -230,7 +231,6 @@ export function RequestTutorialModal({ isOpen, onClose }: RequestTutorialModalPr
                 <option value="+255">+255</option>
                 <option value="+256">+256</option>
                 <option value="+1">+1</option>
-                <option value="+44">+44</option>
                 <option value="+91">+91</option>
                 <option value="+49">+49</option>
                 <option value="+33">+33</option>
@@ -312,7 +312,7 @@ export function RequestTutorialModal({ isOpen, onClose }: RequestTutorialModalPr
             <p className={styles.whatsappPrompt}>
               Need a faster response?{' '}
               <a
-                href="https://wa.me/"
+                href="https://wa.me/447359939606"
                 target="_blank"
                 rel="noopener noreferrer"
                 className={styles.whatsappLink}

@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import styles from './WhatsAppFab.module.css';
 import whatsappIconUrl from '../assets/whatsapp-icon.svg';
 
-const WHATSAPP_LINK = 'https://wa.me/';
+const WHATSAPP_LINK = 'https://wa.me/447359939606';
 
 export function WhatsAppFab() {
   return (

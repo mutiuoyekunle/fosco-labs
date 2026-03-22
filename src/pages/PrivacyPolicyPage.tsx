@@ -41,8 +41,8 @@ export function PrivacyPolicyPage() {
             <p>
               You can contact us about privacy matters at{' '}
               <strong>privacy@foscolabs.co.uk</strong> or{' '}
-              <strong>+44 20 7946 0999</strong>. This is a placeholder contact
-              and can be updated later.
+              <strong>07359939606</strong>. This is a placeholder contact and
+              can be updated later.
             </p>
           </section>
 
