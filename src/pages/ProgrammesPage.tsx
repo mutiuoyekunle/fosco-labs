@@ -1,46 +1,107 @@
 import styles from './ProgrammesPage.module.css';
 import buttonStyles from '../components/Button/Button.module.css';
 
-const PROGRAMMES = [
+const PROGRAMME_HIGHLIGHTS = [
+  '12-week guided programme',
+  '4 modules plus a final capstone project',
+  'No prior AI experience required',
+  'Installment payment available',
+] as const;
+
+const LEARNING_OUTCOMES = [
+  'AI foundations and prompt engineering',
+  'AI API integration with OpenAI-style services',
+  'Building AI chat interfaces and workflow tools',
+  'Retrieval-Augmented Generation (RAG) systems',
+  'AI workflows, automation, and deployment',
+] as const;
+
+const MODULES = [
   {
-    id: 'ai-foundations',
-    title: 'AI Engineering Foundations',
-    level: 'Beginner / Junior',
-    description:
-      'Build practical AI product skills with guided, production-style projects and mentorship.',
-    duration: '8 weeks',
-    startDate: 'April 14, 2026',
-    schedule: 'Tue & Thu, 18:30-20:30 (UK)',
-    price: '£799',
-    installment: 'or 3 x £279',
-    recommended: true,
+    id: 'module-1',
+    label: 'Module 1',
+    title: 'AI Foundations',
+    weeks: 'Weeks 1-3',
+    skills: [
+      'Understanding LLM APIs',
+      'Prompt engineering fundamentals',
+      'API integration',
+      'Using AI coding assistants such as ChatGPT, Copilot, and Lovable',
+    ],
+    projectTitle: 'Sample project',
+    projectName: 'AI Text Summarizer',
+    projectDescription:
+      'Build a tool that sends text to an AI API and returns a structured summary.',
   },
   {
-    id: 'frontend-accelerator',
-    title: 'Modern Frontend Accelerator',
-    level: 'Intermediate',
-    description:
-      'Upgrade your React, TypeScript, and architecture decisions for scalable, team-ready delivery.',
-    duration: '6 weeks',
-    startDate: 'April 18, 2026',
-    schedule: 'Sat, 10:00-13:00 (UK)',
-    price: '£649',
-    installment: 'or 2 x £349',
-    recommended: false,
+    id: 'module-2',
+    label: 'Module 2',
+    title: 'AI Web Applications',
+    weeks: 'Weeks 4-6',
+    skills: [
+      'Building AI chat interfaces',
+      'React / Next.js basics',
+      'Frontend and AI API integration',
+      'Prompt workflows',
+    ],
+    projectTitle: 'Sample project',
+    projectName: 'AI Chat Assistant Web App',
+    projectDescription:
+      'Build a browser-based AI assistant with a chat interface and conversation history.',
   },
   {
-    id: 'ai-assisted-delivery',
-    title: 'AI-Assisted Delivery for Product Teams',
-    level: 'Advanced / Team',
-    description:
-      'Use AI tooling safely in delivery workflows to increase velocity without sacrificing engineering quality.',
-    duration: '4 weeks',
-    startDate: 'May 6, 2026',
-    schedule: 'Wed, 17:00-19:00 (UK)',
-    price: '£999',
-    installment: 'or 4 x £269',
-    recommended: false,
+    id: 'module-3',
+    label: 'Module 3',
+    title: 'Retrieval AI (RAG)',
+    weeks: 'Weeks 7-9',
+    skills: [
+      'Embeddings',
+      'Vector databases',
+      'Document indexing',
+      'Retrieval-Augmented Generation (RAG)',
+    ],
+    projectTitle: 'Sample project',
+    projectName: 'AI Document Q&A System',
+    projectDescription:
+      'Users upload documents and ask questions about them using AI retrieval techniques.',
   },
+  {
+    id: 'module-4',
+    label: 'Module 4',
+    title: 'AI Systems & Deployment',
+    weeks: 'Weeks 10-11',
+    skills: [
+      'AI workflows',
+      'Basic agent patterns',
+      'Cloud deployment',
+      'AI application architecture',
+    ],
+    projectTitle: 'Sample project',
+    projectName: 'AI Workflow Assistant',
+    projectDescription:
+      'Explore builds such as an AI research assistant, AI meeting summarizer, or AI support assistant.',
+  },
+  {
+    id: 'capstone',
+    label: 'Week 12',
+    title: 'Final Capstone Project',
+    weeks: 'Week 12',
+    skills: [
+      'Scope and design a complete AI-powered product',
+      'Ship a production-style solution using the concepts learned in the programme',
+      'Document the project for portfolio and hiring conversations',
+    ],
+    projectTitle: 'Example projects',
+    projectName: 'AI Knowledge Base, AI Customer Support Assistant, AI Research Tool, AI Study Assistant',
+    projectDescription:
+      'Students design and deploy a complete AI-powered application as their final portfolio piece.',
+  },
+] as const;
+
+const OUTCOMES = [
+  'Multiple AI-powered applications',
+  'Portfolio-ready GitHub repositories',
+  'Experience building AI systems with LLM APIs and RAG concepts',
 ] as const;
 
 export function ProgrammesPage() {
@@ -50,11 +111,13 @@ export function ProgrammesPage() {
       <section className={styles.heroWrapper}>
         <div className={styles.heroSection}>
           <div className={styles.heroContent}>
-            <h1 className={styles.pageTitle}>Programmes & Pricing</h1>
+            <p className={styles.heroEyebrow}>Fosco Labs flagship cohort</p>
+            <h1 className={styles.pageTitle}>AI Development Programme</h1>
             <p className={styles.pageDescription}>
-              Choose a training track that matches your current level, goals,
-              and delivery timeline. We offer transparent pricing, installment
-              plans, and placement-based discounts for accelerated tracks.
+              Become an AI engineer in 12 weeks. This programme is built to
+              take learners from beginner to professional with practical,
+              production-ready skills in AI engineering, AI web applications,
+              retrieval systems, and deployment.
             </p>
           </div>
         </div>
@@ -63,109 +126,159 @@ export function ProgrammesPage() {
       {/* Body content area */}
       <section className={styles.bodySectionWrapper}>
         <div className={styles.bodySection}>
-          <div className={styles.programmesGrid}>
-            {PROGRAMMES.map((programme) => (
-              <article
-                key={programme.id}
-                id={programme.id}
-                className={
-                  programme.recommended
-                    ? `${styles.programmeCard} ${styles.programmeCardRecommended}`
-                    : styles.programmeCard
-                }
-              >
-                <div className={styles.badgeRow}>
-                  <span className={styles.level}>{programme.level}</span>
-                  {programme.recommended && (
-                    <span className={styles.recommended}>Recommended</span>
-                  )}
-                </div>
-
-                <h2 className={styles.programmeTitle}>{programme.title}</h2>
-                <p className={styles.programmeDescription}>
-                  {programme.description}
+          <section id="ai-development-programme" className={styles.featuredProgramme}>
+            <div className={styles.featuredCopy}>
+              <div className={styles.titleStack}>
+                <span className={styles.kicker}>From beginner to professional</span>
+                <h2 className={styles.featuredTitle}>Build real AI-powered systems</h2>
+                <p className={styles.featuredDescription}>
+                  The goal of this programme is to prepare learners to build
+                  real AI-powered systems aligned with the skills used in modern
+                  AI engineering roles.
                 </p>
+              </div>
 
-                <ul className={styles.metaList}>
-                  <li>
-                    <strong>Duration:</strong> {programme.duration}
-                  </li>
-                  <li>
-                    <strong>Start Date:</strong> {programme.startDate}
-                  </li>
-                  <li>
-                    <strong>Schedule:</strong> {programme.schedule}
-                  </li>
-                </ul>
-
-                <div className={styles.priceRow}>
-                  <p className={styles.price}>{programme.price}</p>
-                  <p className={styles.installment}>{programme.installment}</p>
-                  <a
-                    href="/contact"
-                    className={`${buttonStyles.secondary} ${styles.detailsAction}`}
-                  >
-                    Contact for details
-                  </a>
-                </div>
-              </article>
-            ))}
-          </div>
-
-          <div className={styles.infoGrid}>
-            <section className={styles.infoCard}>
-              <h2>Pricing Structure</h2>
-              <ul>
-                <li>Base fees are listed per programme and cohort period.</li>
-                <li>Installment plans are available on eligible tracks.</li>
-                <li>Early-bird offers may apply to selected cohorts.</li>
-                <li>
-                  Skills-based placement discounts are available for accelerated
-                  tracks (up to 15%).
-                </li>
-                <li>Discounts are not stackable unless stated otherwise.</li>
+              <ul className={styles.highlightList}>
+                {PROGRAMME_HIGHLIGHTS.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
               </ul>
-            </section>
 
-            <section className={styles.infoCard}>
-              <h2>How Pricing Works</h2>
-              <ul>
-                <li>Step 1: Submit your interest for a programme.</li>
-                <li>Step 2: Join a short assessment/discovery call.</li>
-                <li>
-                  Step 3: Confirm the best-fit track, schedule, and final fee.
-                </li>
+              <div className={styles.featuredActions}>
+                <a href="/contact" className={buttonStyles.primary}>
+                  Apply Now
+                </a>
+                <a href="#roadmap" className={buttonStyles.secondary}>
+                  View Roadmap
+                </a>
+              </div>
+            </div>
+
+            <aside className={styles.priceCard}>
+              <span className={styles.priceBadge}>Current cohort</span>
+              <p className={styles.priceLabel}>Price</p>
+              <p className={styles.priceValue}>£599</p>
+              <p className={styles.priceNote}>Installment payment is available</p>
+
+              <div className={styles.metaBlock}>
+                <p className={styles.metaLabel}>Class starts</p>
+                <p className={styles.metaValue}>Saturday 11th April, 2026</p>
+              </div>
+
+              <div className={styles.metaBlock}>
+                <p className={styles.metaLabel}>Duration</p>
+                <p className={styles.metaValue}>12 weeks</p>
+              </div>
+
+              <div className={styles.metaBlock}>
+                <p className={styles.metaLabel}>Structure</p>
+                <p className={styles.metaValue}>4 modules + capstone project</p>
+              </div>
+            </aside>
+          </section>
+
+          <section id="overview" className={styles.overviewGrid}>
+            <article className={styles.infoCard}>
+              <h2>Who this programme is for</h2>
+              <p>
+                Suitable for beginners, junior, mid-level, and senior
+                developers who want practical AI engineering skills they can use
+                in real product delivery.
+              </p>
+              <p className={styles.emphasis}>No prior AI experience required.</p>
+            </article>
+
+            <article className={styles.infoCard}>
+              <h2>What you will learn</h2>
+              <ul className={styles.checkList}>
+                {LEARNING_OUTCOMES.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
               </ul>
-              <p>
-                Need team pricing or a custom plan? Use the contact page for a
-                detailed quote.
-              </p>
-            </section>
-          </div>
+            </article>
+          </section>
 
-          <div className={styles.faqGrid}>
-            <article className={styles.faqItem}>
-              <h3>Can I pay in installments?</h3>
-              <p>
-                Yes. Installment options are shown on each track and finalized
-                at enrollment.
+          <section id="roadmap" className={styles.roadmapSection}>
+            <div className={styles.sectionHeader}>
+              <p className={styles.sectionEyebrow}>Programme roadmap</p>
+              <h2 className={styles.sectionTitle}>12-week learning path</h2>
+              <p className={styles.sectionDescription}>
+                Four structured modules build from fundamentals to real AI
+                system delivery, followed by a final capstone project.
               </p>
+            </div>
+
+            <div className={styles.roadmapGrid}>
+              {MODULES.map((module) => (
+                <article key={module.id} className={styles.moduleCard}>
+                  <div className={styles.moduleHead}>
+                    <span className={styles.moduleBadge}>{module.label}</span>
+                    <span className={styles.moduleWeeks}>{module.weeks}</span>
+                  </div>
+
+                  <h3 className={styles.moduleTitle}>{module.title}</h3>
+
+                  <div className={styles.moduleBlock}>
+                    <p className={styles.moduleBlockTitle}>Skills</p>
+                    <ul className={styles.moduleList}>
+                      {module.skills.map((skill) => (
+                        <li key={skill}>{skill}</li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  <div className={styles.moduleProject}>
+                    <p className={styles.moduleBlockTitle}>{module.projectTitle}</p>
+                    <p className={styles.projectName}>{module.projectName}</p>
+                    <p className={styles.projectDescription}>
+                      {module.projectDescription}
+                    </p>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </section>
+
+          <section id="outcomes" className={styles.outcomesSection}>
+            <div className={styles.sectionHeader}>
+              <p className={styles.sectionEyebrow}>Graduate outcomes</p>
+              <h2 className={styles.sectionTitle}>What learners finish with</h2>
+            </div>
+
+            <div className={styles.outcomesGrid}>
+              {OUTCOMES.map((item) => (
+                <article key={item} className={styles.outcomeCard}>
+                  <h3>{item}</h3>
+                </article>
+              ))}
+            </div>
+          </section>
+
+          <section id="pricing" className={styles.pricingSection}>
+            <article className={`${styles.infoCard} ${styles.infoCardDark}`}>
+              <h2>Pricing and enrollment</h2>
+              <ul className={styles.darkList}>
+                <li>Programme fee: £599</li>
+                <li>Installment payment is available</li>
+                <li>Current cohort starts Saturday 11th April, 2026</li>
+                <li>Applications are open while places remain available</li>
+              </ul>
             </article>
-            <article className={styles.faqItem}>
-              <h3>Do you offer team pricing?</h3>
+
+            <article className={styles.infoCard}>
+              <h2>Need more details before applying?</h2>
               <p>
-                Yes. Teams and company-sponsored cohorts can request a custom
-                pricing package.
+                Use the contact page if you want clarification on structure,
+                payment plan options, suitability for your current level, or
+                the type of capstone project you can build.
               </p>
+              <div className={styles.inlineActions}>
+                <a href="/contact" className={buttonStyles.primary}>
+                  Contact Us
+                </a>
+              </div>
             </article>
-            <article className={styles.faqItem}>
-              <h3>How does placement discount work?</h3>
-              <p>
-                We review your current level and route you into the best-fit
-                track. Some accelerated placements get reduced fees.
-              </p>
-            </article>
-          </div>
+          </section>
         </div>
       </section>
 
@@ -173,18 +286,19 @@ export function ProgrammesPage() {
       <section className={styles.ctaSectionWrapper}>
         <div className={styles.ctaSection}>
           <div className={styles.ctaContent}>
-            <h2 className={styles.ctaTitle}>Need help choosing a track?</h2>
+            <h2 className={styles.ctaTitle}>Ready to join the cohort?</h2>
             <p className={styles.ctaDescription}>
-              Tell us your experience level and target outcome. We'll recommend
-              the most suitable programme and payment structure.
+              Tell us your current level, your goals, and whether you want the
+              installment option. We&apos;ll help you confirm if this programme
+              is the right fit.
             </p>
           </div>
           <div className={styles.ctaActions}>
             <a href="/contact" className={buttonStyles.primary}>
-              Contact Us
+              Apply Now
             </a>
-            <a href="/#categories" className={buttonStyles.secondary}>
-              Explore Training Categories
+            <a href="/#consultancy" className={buttonStyles.secondary}>
+              Request Consultancy
             </a>
           </div>
         </div>

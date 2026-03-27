@@ -5,11 +5,11 @@ import { useReducedMotion } from '../hooks/useReducedMotion';
 import { sectionVariants } from '../utils/animations';
 
 const PROGRAMMES_LINKS = [
-  { label: 'AI Engineering', href: '/programmes#ai-foundations' },
-  { label: 'JavaScript & Frontend', href: '/programmes#frontend-accelerator' },
-  { label: 'UI Engineering', href: '/programmes#frontend-accelerator' },
-  { label: 'AI-Assisted Coding', href: '/programmes#ai-assisted-delivery' },
-  { label: 'Firebase & Supabase', href: '/programmes#ai-foundations' },
+  { label: 'AI Development Programme', href: '/programmes#ai-development-programme' },
+  { label: 'Programme Overview', href: '/programmes#overview' },
+  { label: 'Roadmap', href: '/programmes#roadmap' },
+  { label: 'Outcomes', href: '/programmes#outcomes' },
+  { label: 'Pricing', href: '/programmes#pricing' },
 ] as const;
 
 const COMPANY_LINKS = [
