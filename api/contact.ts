@@ -59,66 +59,66 @@ function buildEmailBody(formType: ContactPayload['formType'], fields: ContactFie
 }
 
 export default async function handler(req: any, res: any) {
-  if (req.method !== 'POST') {
-    res.setHeader('Allow', 'POST');
-    return res.status(405).json({ error: 'Method not allowed.' });
-  }
+  try {
+    if (req.method !== 'POST') {
+      res.setHeader('Allow', 'POST');
+      return res.status(405).json({ error: 'Method not allowed.' });
+    }
 
-  const apiKey = process.env.PLUNK_API_KEY;
-  const from = process.env.PLUNK_FROM_EMAIL;
-  const to = process.env.CONTACT_TO_EMAIL;
+    const apiKey = process.env.PLUNK_API_KEY;
+    const from = process.env.PLUNK_FROM_EMAIL;
+    const to = process.env.CONTACT_TO_EMAIL;
 
-  if (!apiKey || !from || !to) {
-    return res.status(500).json({ error: 'Email service is not configured.' });
-  }
+    if (!apiKey || !from || !to) {
+      console.error('Missing email configuration.', {
+        hasApiKey: Boolean(apiKey),
+        hasFrom: Boolean(from),
+        hasTo: Boolean(to),
+      });
+      return res.status(500).json({ error: 'Email service is not configured.' });
+    }
 
-  const payload =
-    typeof req.body === 'string'
-      ? (JSON.parse(req.body) as ContactPayload)
-      : (req.body as ContactPayload);
+    const payload =
+      typeof req.body === 'string'
+        ? (JSON.parse(req.body) as ContactPayload)
+        : (req.body as ContactPayload);
 
-  if (
-    !payload ||
-    !payload.formType ||
-    !['contact', 'consultancy', 'training'].includes(payload.formType) ||
-    !payload.subject ||
-    !payload.replyTo ||
-    !Array.isArray(payload.fields)
-  ) {
-    return res.status(400).json({ error: 'Invalid submission payload.' });
-  }
+    if (
+      !payload ||
+      !payload.formType ||
+      !['contact', 'consultancy', 'training'].includes(payload.formType) ||
+      !payload.subject ||
+      !payload.replyTo ||
+      !Array.isArray(payload.fields)
+    ) {
+      return res.status(400).json({ error: 'Invalid submission payload.' });
+    }
 
-  if (!isEmailValid(payload.replyTo)) {
-    return res.status(400).json({ error: 'Reply-to email is invalid.' });
-  }
+    if (!isEmailValid(payload.replyTo)) {
+      return res.status(400).json({ error: 'Reply-to email is invalid.' });
+    }
 
-  const sanitizedFields = payload.fields
-    .filter(
-      (field) =>
-        field &&
-        typeof field.label === 'string' &&
-        typeof field.value === 'string' &&
-        field.label.trim() &&
-        field.value.trim()
-    )
-    .map((field) => ({
-      label: field.label.trim(),
-      value: field.value.trim(),
-    }));
+    const sanitizedFields = payload.fields
+      .filter(
+        (field) =>
+          field &&
+          typeof field.label === 'string' &&
+          typeof field.value === 'string' &&
+          field.label.trim() &&
+          field.value.trim()
+      )
+      .map((field) => ({
+        label: field.label.trim(),
+        value: field.value.trim(),
+      }));
 
-  if (sanitizedFields.length === 0) {
-    return res.status(400).json({ error: 'Submission is empty.' });
-  }
+    if (sanitizedFields.length === 0) {
+      return res.status(400).json({ error: 'Submission is empty.' });
+    }
 
-  const body = buildEmailBody(payload.formType, sanitizedFields);
+    const body = buildEmailBody(payload.formType, sanitizedFields);
 
-  const response = await fetch('https://api.useplunk.com/v1/send', {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
+    const plunkPayload = {
       to,
       from,
       reply: payload.replyTo,
@@ -126,16 +126,36 @@ export default async function handler(req: any, res: any) {
       body,
       name: 'Fosco Labs',
       subscribed: false,
-    }),
-  });
+    };
 
-  if (!response.ok) {
-    const errorText = await response.text();
-    return res.status(502).json({
-      error: 'Unable to send enquiry email.',
-      details: errorText,
+    const response = await fetch('https://api.useplunk.com/v1/send', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(plunkPayload),
     });
-  }
 
-  return res.status(200).json({ success: true });
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('Plunk send failed.', {
+        status: response.status,
+        statusText: response.statusText,
+        response: errorText,
+        payload: {
+          ...plunkPayload,
+          authorization: 'redacted',
+        },
+      });
+      return res.status(502).json({
+        error: `Unable to send enquiry email. ${errorText}`,
+      });
+    }
+
+    return res.status(200).json({ success: true });
+  } catch (error) {
+    console.error('Unexpected contact handler error.', error);
+    return res.status(500).json({ error: 'Unexpected server error.' });
+  }
 }
