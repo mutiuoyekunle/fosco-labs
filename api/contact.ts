@@ -119,16 +119,20 @@ export default async function handler(req: any, res: any) {
     const body = buildEmailBody(payload.formType, sanitizedFields);
 
     const plunkPayload = {
-      to,
-      from,
-      reply: payload.replyTo,
+      to: {
+        email: to,
+      },
+      from: {
+        name: 'Fosco Labs',
+        email: from,
+      },
       subject: payload.subject.trim(),
       body,
-      name: 'Fosco Labs',
+      replyTo: payload.replyTo,
       subscribed: false,
     };
 
-    const response = await fetch('https://api.useplunk.com/v1/send', {
+    const response = await fetch('https://next-api.useplunk.com/v1/send', {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${apiKey}`,
