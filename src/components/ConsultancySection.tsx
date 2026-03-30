@@ -4,7 +4,7 @@ import styles from './ConsultancySection.module.css';
 import buttonStyles from './Button/Button.module.css';
 import { useReducedMotion } from '../hooks/useReducedMotion';
 import { sectionVariants } from '../utils/animations';
-import { isEmailValid, isPhoneValid, openMailto } from '../utils/formEmail';
+import { isEmailValid, isPhoneValid, submitEnquiry } from '../utils/formEmail';
 
 function CheckIcon({ className }: { className?: string }) {
   return (
@@ -55,6 +55,11 @@ export function ConsultancySection() {
     serviceType: '',
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<{
+    type: 'idle' | 'success' | 'error';
+    message: string;
+  }>({ type: 'idle', message: '' });
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -63,7 +68,7 @@ export function ConsultancySection() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const nextErrors: Record<string, string> = {};
 
@@ -82,21 +87,52 @@ export function ConsultancySection() {
     if (!formData.serviceType) nextErrors.serviceType = 'Select a service type.';
 
     setErrors(nextErrors);
+    setSubmitStatus({ type: 'idle', message: '' });
 
     if (Object.keys(nextErrors).length > 0) return;
 
-    openMailto({
-      subject: `Consultancy enquiry: ${formData.serviceType}`,
-      lines: [
-        'Consultancy enquiry',
-        '',
-        `First name: ${formData.firstName.trim()}`,
-        `Last name: ${formData.lastName.trim()}`,
-        `Email: ${formData.email.trim()}`,
-        `Phone: ${formData.countryCode} ${formData.mobile.trim()}`,
-        `Service type: ${formData.serviceType}`,
-      ],
-    });
+    setIsSubmitting(true);
+
+    try {
+      await submitEnquiry({
+        formType: 'consultancy',
+        replyTo: formData.email.trim(),
+        subject: `Consultancy enquiry: ${formData.serviceType}`,
+        fields: [
+          { label: 'First name', value: formData.firstName.trim() },
+          { label: 'Last name', value: formData.lastName.trim() },
+          { label: 'Email', value: formData.email.trim() },
+          {
+            label: 'Phone',
+            value: `${formData.countryCode} ${formData.mobile.trim()}`,
+          },
+          { label: 'Service type', value: formData.serviceType },
+        ],
+      });
+
+      setFormData({
+        firstName: '',
+        lastName: '',
+        email: '',
+        mobile: '',
+        countryCode: '+44',
+        serviceType: '',
+      });
+      setSubmitStatus({
+        type: 'success',
+        message: 'Your enquiry has been sent. We will get back to you shortly.',
+      });
+    } catch (error) {
+      setSubmitStatus({
+        type: 'error',
+        message:
+          error instanceof Error
+            ? error.message
+            : 'Unable to send your enquiry right now.',
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const reduceMotion = useReducedMotion();
@@ -270,13 +306,28 @@ export function ConsultancySection() {
           <motion.button
             type="submit"
             className={buttonStyles.submit}
+            disabled={isSubmitting}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             transition={{ duration: 0.2 }}
           >
-            Request Consultancy
+            {isSubmitting ? 'Sending...' : 'Request Consultancy'}
           </motion.button>
-          <p className={styles.submitHint}>This opens your email app with the enquiry details.</p>
+          <p className={styles.submitHint}>
+            We&apos;ll send this directly to our team inbox.
+          </p>
+          {submitStatus.type !== 'idle' && (
+            <p
+              className={
+                submitStatus.type === 'success'
+                  ? styles.successText
+                  : styles.submitError
+              }
+              role="status"
+            >
+              {submitStatus.message}
+            </p>
+          )}
         </form>
       </div>
     </motion.section>

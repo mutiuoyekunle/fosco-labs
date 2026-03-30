@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import styles from './RequestTutorialModal.module.css';
 import buttonStyles from './Button/Button.module.css';
-import { isEmailValid, isPhoneValid, openMailto } from '../utils/formEmail';
+import { isEmailValid, isPhoneValid, submitEnquiry } from '../utils/formEmail';
 
 type RequestTutorialModalProps = {
   isOpen: boolean;
@@ -22,6 +22,11 @@ export function RequestTutorialModal({ isOpen, onClose }: RequestTutorialModalPr
     goals: '',
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<{
+    type: 'idle' | 'success' | 'error';
+    message: string;
+  }>({ type: 'idle', message: '' });
 
   const updateScrollState = useCallback(() => {
     const el = scrollRef.current;
@@ -125,7 +130,7 @@ export function RequestTutorialModal({ isOpen, onClose }: RequestTutorialModalPr
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     const nextErrors: Record<string, string> = {};
@@ -152,26 +157,54 @@ export function RequestTutorialModal({ isOpen, onClose }: RequestTutorialModalPr
     }
 
     setErrors(nextErrors);
+    setSubmitStatus({ type: 'idle', message: '' });
 
     if (Object.keys(nextErrors).length > 0) return;
 
-    openMailto({
-      subject: `Training enquiry: ${formData.learningInterest}`,
-      lines: [
-        'Training enquiry',
-        '',
-        `Full name: ${formData.fullName.trim()}`,
-        `Email: ${formData.email.trim()}`,
-        `Phone: ${formData.countryCode} ${formData.phone.trim()}`,
-        `Learning interest: ${formData.learningInterest}`,
-        `Current level: ${formData.currentLevel}`,
-        '',
-        'Goals:',
-        formData.goals.trim(),
-      ],
-    });
+    setIsSubmitting(true);
 
-    onClose();
+    try {
+      await submitEnquiry({
+        formType: 'training',
+        replyTo: formData.email.trim(),
+        subject: `Training enquiry: ${formData.learningInterest}`,
+        fields: [
+          { label: 'Full name', value: formData.fullName.trim() },
+          { label: 'Email', value: formData.email.trim() },
+          {
+            label: 'Phone',
+            value: `${formData.countryCode} ${formData.phone.trim()}`,
+          },
+          { label: 'Learning interest', value: formData.learningInterest },
+          { label: 'Current level', value: formData.currentLevel },
+          { label: 'Goals', value: formData.goals.trim() },
+        ],
+      });
+
+      setFormData({
+        fullName: '',
+        email: '',
+        countryCode: '+44',
+        phone: '',
+        learningInterest: '',
+        currentLevel: '',
+        goals: '',
+      });
+      setSubmitStatus({
+        type: 'success',
+        message: 'Your training request has been sent successfully.',
+      });
+    } catch (error) {
+      setSubmitStatus({
+        type: 'error',
+        message:
+          error instanceof Error
+            ? error.message
+            : 'Unable to send your request right now.',
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -407,8 +440,12 @@ export function RequestTutorialModal({ isOpen, onClose }: RequestTutorialModalPr
           </div>
 
           <div className={styles.actions}>
-            <button type="submit" className={buttonStyles.primary}>
-              Submit Request
+            <button
+              type="submit"
+              className={buttonStyles.primary}
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? 'Sending...' : 'Submit Request'}
             </button>
             <p className={styles.whatsappPrompt}>
               Need a faster response?{' '}
@@ -422,6 +459,18 @@ export function RequestTutorialModal({ isOpen, onClose }: RequestTutorialModalPr
               </a>
             </p>
           </div>
+          {submitStatus.type !== 'idle' && (
+            <p
+              className={
+                submitStatus.type === 'success'
+                  ? styles.successText
+                  : styles.submitError
+              }
+              role="status"
+            >
+              {submitStatus.message}
+            </p>
+          )}
         </form>
         </div>
         {canScroll && (

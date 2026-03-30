@@ -225,6 +225,21 @@
   color: var(--color-consultancy-light);
 }
 
+.successText,
+.submitError {
+  margin: 0;
+  font-size: 13px;
+  line-height: 20px;
+}
+
+.successText {
+  color: #bbf7d0;
+}
+
+.submitError {
+  color: #fecaca;
+}
+
 @media (max-width: 900px) {
   .section {
     padding: 48px 24px;

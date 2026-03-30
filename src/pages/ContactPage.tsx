@@ -2,10 +2,9 @@ import { useState } from 'react';
 import styles from './ContactPage.module.css';
 import buttonStyles from '../components/Button/Button.module.css';
 import {
-  GENERAL_ENQUIRY_EMAIL,
   isEmailValid,
   isPhoneValid,
-  openMailto,
+  submitEnquiry,
 } from '../utils/formEmail';
 
 const INITIAL_FORM = {
@@ -26,6 +25,11 @@ const INITIAL_FORM = {
 export function ContactPage() {
   const [formData, setFormData] = useState(INITIAL_FORM);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<{
+    type: 'idle' | 'success' | 'error';
+    message: string;
+  }>({ type: 'idle', message: '' });
   const isLearningTrack =
     formData.enquiryTrack === 'learning' || formData.enquiryTrack === 'both';
   const isConsultancyTrack =
@@ -38,7 +42,7 @@ export function ContactPage() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const nextErrors: Record<string, string> = {};
 
@@ -71,6 +75,7 @@ export function ContactPage() {
     }
 
     setErrors(nextErrors);
+    setSubmitStatus({ type: 'idle', message: '' });
 
     if (Object.keys(nextErrors).length > 0) return;
 
@@ -81,31 +86,58 @@ export function ContactPage() {
         ? 'Learning'
         : 'Consultancy';
 
-    openMailto({
-      to: GENERAL_ENQUIRY_EMAIL,
-      subject: `Website enquiry: ${enquiryLabel}`,
-      lines: [
-        'Website contact enquiry',
-        '',
-        `Support needed: ${enquiryLabel}`,
-        `Full name: ${formData.fullName.trim()}`,
-        `Work email: ${formData.email.trim()}`,
-        `Phone: ${
-          formData.phone.trim()
-            ? `${formData.countryCode} ${formData.phone.trim()}`
-            : 'Not provided'
-        }`,
-        `Company: ${formData.company.trim() || 'Not provided'}`,
-        `Project service type: ${formData.projectServiceType || 'Not provided'}`,
-        `Learning interest: ${formData.learningInterest || 'Not provided'}`,
-        `Current skill level: ${formData.currentLevel || 'Not provided'}`,
-        `Budget range: ${formData.budgetRange || 'Not provided'}`,
-        `Timeline: ${formData.timeline || 'Not provided'}`,
-        '',
-        'Goals:',
-        formData.projectGoal.trim(),
-      ],
-    });
+    setIsSubmitting(true);
+
+    try {
+      await submitEnquiry({
+        formType: 'contact',
+        replyTo: formData.email.trim(),
+        subject: `Website enquiry: ${enquiryLabel}`,
+        fields: [
+          { label: 'Support needed', value: enquiryLabel },
+          { label: 'Full name', value: formData.fullName.trim() },
+          { label: 'Work email', value: formData.email.trim() },
+          {
+            label: 'Phone',
+            value: formData.phone.trim()
+              ? `${formData.countryCode} ${formData.phone.trim()}`
+              : 'Not provided',
+          },
+          { label: 'Company', value: formData.company.trim() || 'Not provided' },
+          {
+            label: 'Project service type',
+            value: formData.projectServiceType || 'Not provided',
+          },
+          {
+            label: 'Learning interest',
+            value: formData.learningInterest || 'Not provided',
+          },
+          {
+            label: 'Current skill level',
+            value: formData.currentLevel || 'Not provided',
+          },
+          { label: 'Budget range', value: formData.budgetRange || 'Not provided' },
+          { label: 'Timeline', value: formData.timeline || 'Not provided' },
+          { label: 'Goals', value: formData.projectGoal.trim() },
+        ],
+      });
+
+      setFormData(INITIAL_FORM);
+      setSubmitStatus({
+        type: 'success',
+        message: 'Your enquiry has been sent. We will reply within one business day.',
+      });
+    } catch (error) {
+      setSubmitStatus({
+        type: 'error',
+        message:
+          error instanceof Error
+            ? error.message
+            : 'Unable to send your enquiry right now.',
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -403,13 +435,29 @@ export function ContactPage() {
               </label>
 
               <div className={styles.submitRow}>
-                <button type="submit" className={buttonStyles.primary}>
-                  Send Enquiry
+                <button
+                  type="submit"
+                  className={buttonStyles.primary}
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? 'Sending...' : 'Send Enquiry'}
                 </button>
                 <p className={styles.helperText}>
-                  Opens your email app with the enquiry details addressed to {GENERAL_ENQUIRY_EMAIL}.
+                  Your message will be sent directly to our team inbox.
                 </p>
               </div>
+              {submitStatus.type !== 'idle' && (
+                <p
+                  className={
+                    submitStatus.type === 'success'
+                      ? styles.successText
+                      : styles.submitError
+                  }
+                  role="status"
+                >
+                  {submitStatus.message}
+                </p>
+              )}
             </form>
           </div>
 

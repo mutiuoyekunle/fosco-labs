@@ -1,5 +1,17 @@
 const GENERAL_ENQUIRY_EMAIL = 'hello@foscolabs.co.uk';
 
+type EnquiryField = {
+  label: string;
+  value: string;
+};
+
+type EnquiryPayload = {
+  formType: 'contact' | 'consultancy' | 'training';
+  subject: string;
+  replyTo: string;
+  fields: EnquiryField[];
+};
+
 export function isEmailValid(email: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
 }
@@ -9,31 +21,22 @@ export function isPhoneValid(phone: string) {
   return cleaned.length >= 7 && cleaned.length <= 15;
 }
 
-export function buildMailtoHref({
-  to = GENERAL_ENQUIRY_EMAIL,
-  subject,
-  lines,
-}: {
-  to?: string;
-  subject: string;
-  lines: Array<string | null | undefined>;
-}) {
-  const body = lines.filter(Boolean).join('\n');
-  return `mailto:${encodeURIComponent(to)}?subject=${encodeURIComponent(
-    subject
-  )}&body=${encodeURIComponent(body)}`;
-}
+export async function submitEnquiry(payload: EnquiryPayload) {
+  const response = await fetch('/api/contact', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(payload),
+  });
 
-export function openMailto({
-  to,
-  subject,
-  lines,
-}: {
-  to?: string;
-  subject: string;
-  lines: Array<string | null | undefined>;
-}) {
-  window.location.href = buildMailtoHref({ to, subject, lines });
+  const result = await response.json().catch(() => null);
+
+  if (!response.ok) {
+    throw new Error(result?.error || 'Unable to submit enquiry.');
+  }
+
+  return result;
 }
 
 export { GENERAL_ENQUIRY_EMAIL };
