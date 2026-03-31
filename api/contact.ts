@@ -58,6 +58,32 @@ function buildEmailBody(formType: ContactPayload['formType'], fields: ContactFie
   `;
 }
 
+function buildAutoReplyBody(formType: ContactPayload['formType'], recipientName?: string) {
+  const firstName = recipientName?.trim().split(/\s+/)[0] || 'there';
+  const contextLine =
+    formType === 'consultancy'
+      ? 'We have received your consultancy enquiry and will review it shortly.'
+      : formType === 'training'
+      ? 'We have received your training request and will review it shortly.'
+      : 'We have received your enquiry and will review it shortly.';
+
+  return `
+    <div style="font-family:Arial,Helvetica,sans-serif;color:#0f172a;line-height:1.6;">
+      <h2 style="margin:0 0 16px;color:#002d5b;">Thanks for contacting Fosco Labs</h2>
+      <p style="margin:0 0 12px;color:#334155;">Hi ${escapeHtml(firstName)},</p>
+      <p style="margin:0 0 12px;color:#475569;">
+        ${contextLine}
+      </p>
+      <p style="margin:0 0 12px;color:#475569;">
+        A member of our team will get back to you within one business day.
+      </p>
+      <p style="margin:0;color:#475569;">
+        Fosco Labs
+      </p>
+    </div>
+  `;
+}
+
 export default async function handler(req: any, res: any) {
   try {
     if (req.method !== 'POST') {
@@ -117,6 +143,9 @@ export default async function handler(req: any, res: any) {
     }
 
     const body = buildEmailBody(payload.formType, sanitizedFields);
+    const fullNameField = sanitizedFields.find((field) =>
+      ['Full name', 'First name'].includes(field.label)
+    );
 
     const plunkPayload = {
       to: {
@@ -154,6 +183,42 @@ export default async function handler(req: any, res: any) {
       });
       return res.status(502).json({
         error: `Unable to send enquiry email. ${errorText}`,
+      });
+    }
+
+    const autoReplyPayload = {
+      to: {
+        email: payload.replyTo,
+        name: fullNameField?.value,
+      },
+      from: {
+        name: 'Fosco Labs',
+        email: from,
+      },
+      subject: 'We received your enquiry',
+      body: buildAutoReplyBody(payload.formType, fullNameField?.value),
+      subscribed: false,
+    };
+
+    const autoReplyResponse = await fetch('https://next-api.useplunk.com/v1/send', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(autoReplyPayload),
+    });
+
+    if (!autoReplyResponse.ok) {
+      const autoReplyError = await autoReplyResponse.text();
+      console.error('Plunk auto-reply failed.', {
+        status: autoReplyResponse.status,
+        statusText: autoReplyResponse.statusText,
+        response: autoReplyError,
+        payload: {
+          ...autoReplyPayload,
+          authorization: 'redacted',
+        },
       });
     }
 
